@@ -46,7 +46,7 @@ class Deck:
                     cards = Card.find(d)
                     if cards is not None: 
                         data = []
-                        title=d.name + " cards",
+                        title=Card.card_title(d)
                         heading=("sender", "receiver", "amount", "type", "timestamp")
                         #Iterate cards in cardset generator
                         try:
@@ -61,7 +61,6 @@ class Deck:
                             print("--- ERROR --- :", e)
                             continue
                         #Print the ASCII table
-                        #data = list(data)
                         data.insert(0, heading)      
                         table = AsciiTable(data, title=title)
                         print(table.table)
@@ -91,6 +90,9 @@ class Card:
         cards = pa.find_card_transfers(provider, deck)
         return cards
 
+    @classmethod
+    def card_title(self, deck):
+        return deck.name + " cards" + " "
 
 
 def main():
