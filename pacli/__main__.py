@@ -31,9 +31,27 @@ class Deck:
                                         Settings.deck_version,
                                         Settings.production)
 
-        #Iterate through the list of Deck dicts
-        for d in decks: 
-            if key in d.__dict__.values():
+        Deck.sort_and_print(decks, key, card)
+                    
+    @classmethod
+    def sort_and_print(self, decks, key, card: bool=False):
+        ''' Sort, Format, Print decks '''
+        if key is not "all":
+            #Iterate through the list of Deck dicts and print only Decks with key
+            for d in decks: 
+                if key in d.__dict__.values():
+                    #Print deck information as an ASCII table
+                    print_table(
+                        title=Deck.deck_title(d),
+                        heading=("asset name", "issuer", "issue mode", "decimals", "issue time"),
+                        data=[[ #Use getattr() to cherrypick key values from dict
+                            getattr(d, attr) for attr in 
+                            ["name", "issuer", "issue_mode", "number_of_decimals", "issue_time"] ]])
+                if card:
+                    Card.sort_and_print(d)
+        else:
+            #Iterate through Decks dict and print ALL decks
+            for d in decks: 
                 #Print deck information as an ASCII table
                 print_table(
                     title=Deck.deck_title(d),
@@ -41,33 +59,8 @@ class Deck:
                     data=[[ #Use getattr() to cherrypick key values from dict
                         getattr(d, attr) for attr in 
                         ["name", "issuer", "issue_mode", "number_of_decimals", "issue_time"] ]])
-                #If card flagged is set to True, find cards of decks and print
                 if card:
-                    cards = Card.find(d)
-                    if cards is not None: 
-                        data = []
-                        title=Card.card_title(d)
-                        heading=("sender", "receiver", "amount", "type", "timestamp")
-                        #Iterate cards in cardset generator
-                        try:
-                            for cardset in cards:
-                                for c in cardset:
-                                    data_attr=(
-                                        getattr(c, attr) for attr in 
-                                        ["sender", "receiver", "amount", "type", "timestamp"] )
-                                    to_list = list(data_attr)
-                                    data.append(to_list)
-                        except Exception as e:
-                            print("--- ERROR --- :", e)
-                            continue
-                        #Print the ASCII table
-                        data.insert(0, heading)      
-                        table = AsciiTable(data, title=title)
-                        print(table.table)
-                    else:
-                        data = ["No cards found for " + d.name]
-                        table = AsciiTable(data, title=title)
-                        print(table.table)
+                    Card.sort_and_print(d)
 
     @classmethod
     def new(self, name: str, number_of_decimals: int, issue_mode: int,
@@ -92,7 +85,36 @@ class Card:
 
     @classmethod
     def card_title(self, deck):
+        ''' Return title for card table formatted '''
         return deck.name + " cards" + " "
+
+    @classmethod
+    def sort_and_print(self, deck):
+        ''' Find, format, and print cards for the deck '''
+        cards = Card.find(deck)
+        if cards is not None: 
+            data = []
+            title=Card.card_title(deck)
+            heading=("sender", "receiver", "amount", "type", "timestamp")
+            #Iterate cards in cardset generator
+            try:
+                for cardset in cards:
+                    for c in cardset:
+                        data_attr=(
+                            getattr(c, attr) for attr in 
+                            ["sender", "receiver", "amount", "type", "timestamp"] )
+                        to_list = list(data_attr)
+                        data.append(to_list)
+            except Exception as e:
+                print("--- ERROR --- :", e)
+            #Print the ASCII table
+            data.insert(0, heading)      
+            table = AsciiTable(data, title=title)
+            print(table.table)
+        else:
+            data = ["No cards found for " + deck.name]
+            table = AsciiTable(data, title=title)
+            print(table.table)
 
 
 def main():

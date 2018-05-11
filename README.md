@@ -5,10 +5,7 @@ Simple CLI PeerAssets client.
 
 Implemented using `pypeerassets` Python library, this command line program is useful as companion utility during PeerAssets development and testing.
 It is built for headless (CLI) usage via intuitive and easy to learn set of commands.
-All deck id's are shortened by taking only 20 first characters of full sha256 deck id, this is to allow easier user interaction
-and use less screen space. You can always get full deck id by calling `pacli deck --info` command as shown bellow.
-When querying for deck you can use short deck id, full deck id and deck name.
-Using short or full deck id is advised as decks can have a same name.
+
 
 
 accepted commands at the moment:
@@ -39,3 +36,7 @@ returns:
 ```
 
 Based on the decks with the name "willyB" and cards = True, returning all Card Transfers associated with it.
+
+''' ipython __main__.py deck find all True '''
+
+Returns the complete list of Decks and their associated cards from the provider.
