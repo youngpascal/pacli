@@ -1,11 +1,13 @@
 from terminaltables import AsciiTable
 from binascii import hexlify
-from pacli.provider import provider, change
+#from pacli.provider import provider, change
 
+'''
 def tstamp_to_iso(tstamp):
-    '''make iso timestamp from unix timestamp'''
+    make iso timestamp from unix timestamp
 
     return datetime.fromtimestamp(tstamp).isoformat()
+'''
 
 def print_table(title, heading, data):
     " prints a table to the terminal using terminaltables.AsciiTable "

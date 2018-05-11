@@ -1,12 +1,15 @@
 import fire
 import pypeerassets as pa
-from pacli.provider import provider
+#from pacli.provider import provider
 from pacli.config import Settings
 from terminaltables import AsciiTable
 from utils import print_table
 
-class Deck:
+node = pa.RpcNode(testnet=True)
+provider = node
 
+class Deck:
+    
     @classmethod
     def list(self):
         decks = list(pa.find_all_valid_decks(provider, Settings.deck_version,
@@ -38,6 +41,34 @@ class Deck:
                     data=[[ #Use getattr() to cherrypick key values from dict
                         getattr(d, attr) for attr in 
                         ["name", "issuer", "issue_mode", "number_of_decimals", "issue_time"] ]])
+                #If card flagged is set to True, find cards of decks and print
+                if card:
+                    cards = Card.find(d)
+                    if cards is not None: 
+                        data = []
+                        title=d.name + " cards",
+                        heading=("sender", "receiver", "amount", "type", "timestamp")
+                        #Iterate cards in cardset generator
+                        try:
+                            for cardset in cards:
+                                for c in cardset:
+                                    data_attr=(
+                                        getattr(c, attr) for attr in 
+                                        ["sender", "receiver", "amount", "type", "timestamp"] )
+                                    to_list = list(data_attr)
+                                    data.append(to_list)
+                        except Exception as e:
+                            print("--- ERROR --- :", e)
+                            continue
+                        #Print the ASCII table
+                        #data = list(data)
+                        data.insert(0, heading)      
+                        table = AsciiTable(data, title=title)
+                        print(table.table)
+                    else:
+                        data = ["No cards found for " + d.name]
+                        table = AsciiTable(data, title=title)
+                        print(table.table)
 
     @classmethod
     def new(self, name: str, number_of_decimals: int, issue_mode: int,
@@ -55,10 +86,12 @@ class Deck:
 class Card:
 
     @classmethod
-    def find(self, deck)
+    def find(self, deck):
         ''' Find all associated cards '''
         cards = pa.find_card_transfers(provider, deck)
         return cards
+
+
 
 def main():
 

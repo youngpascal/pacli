@@ -41,8 +41,8 @@ def configured_provider(Settings):
 
     return provider
 
-
-provider = configured_provider(Settings)
+node = pa.RpcNode(testnet=True)
+provider = node
 
 
 def change(utxo):

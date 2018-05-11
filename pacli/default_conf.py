@@ -5,6 +5,6 @@ default_conf = {
     "production": True,
     "deck_version": 1,  # deck version
     "change": "default",
-    "provider": "explorer",  # explorer, holy, cryptoid
+    "provider": "rpcnode",  # explorer, holy, cryptoid
     "loglevel": "WARNING"  # WARNING, INFO, DEBUG
     }
