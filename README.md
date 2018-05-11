@@ -1,4 +1,6 @@
 # pacli
+-- This is a Work In Progress updated version of the original pacli client available at https://github.com/PeerAssets/pacli --
+
 Simple CLI PeerAssets client. 
 
 Implemented using `pypeerassets` Python library, this command line program is useful as companion utility during PeerAssets development and testing.
@@ -9,97 +11,31 @@ When querying for deck you can use short deck id, full deck id and deck name.
 Using short or full deck id is advised as decks can have a same name.
 
 
-Examples:
+accepted commands at the moment:
 
-> pacli --h
+>ipython __main__.py deck <function> <argument 1> <argument 2>
 
-show all commands
+Example:
 
-> pacli status
+>ipython __main__.py deck find willyB True
 
-show current network, all subscribed decks and their card balances
-
-> pacli new_address
-
-generate a new address and load it into wallet
-
-> pacli address_balance <deck> <address>
-
-show card balance of the address
-
-> pacli deck search "My little pony"
-
-search for deck called "My little pony"
-
-> pacli deck list all
-
-list all decks on the network
-
-> pacli deck --info *deck_id*
-
-show detail deck information,
-use this command if you need full deck ID hash and not shortened id.
-
-> pacli deck --subscribe *deck_id*
-
-subscribe to this deck to enable balances and card listing for this deck
-
-> pacli deck --balance *deck_id*
-
-show balances of all addresses involved with this deck
-
-Complex operations take JSON-like sturucture as argument, mimicking peercoind JSON-RPC interface.
-* amount variable is always a list
-* receiver variable is always a list
-
-> pacli deck new '{"name": "My own asset", "number_of_decimals": 1, "issue_mode": "ONCE"}'
-
-issue a new asset named "My own asset".
-
-> pacli card list *deck_id*
-
-list all card transfers related to this deck
- 
-> pacli deck --checksum *deck_id*
-
-verify deck checksum, checksum is difference between issued cards and balances of all the addresses.
-If it is not zero, something is wrong with deck balances. This function will return True if all is fine.
-
-> pacli card burn '{"deck": "d460651e1d9147770ec9d4c254bcc68ff5d203a86b97c09d00955fb3f714cab3", "amounts": [11]}'
-
-burn 11 of card on this deck, this transaction will be denied if you have no cards on this deck.
-
-> pacli card issue '{"deck": "hopium_v2", "receiver": ["n29g3XjvxqWLKgEkyg4Z1BmgrJLccqiH3x"], "amount": [110]}'
-
-issue 110 cards to n29g3XjvxqWLKgEkyg4Z1BmgrJLccqiH3x, this transaction will be declined if you do not own deck issuing address.
-
-> pacli card transfer '{"deck": "08c1928ce84d9066f120", "receiver": ["n1GqTk2NFvSCX3h78rkEA3DoiJW8QxT3Mm", "mv8J47BV8ahpKq7dNXut3kXPgQQCQea5FR",
-                         "myeFFDLXvpGUh8gBPZdCNEsLQ7ZPZkH7d8"], "amount": [1, 9.98, 200.1]}'
-
-transfer cards of "08c1928ce84d9066f120" deck (queried by short id, it is clementines deck) to three different addresses.
-This transaction will be denied if you have no address which holds cards of this deck or if your balance is not sufficient.
-
-> pacli vote new '{"deck": "hopium_v2", "choices": ["y", "n"], "count_mode": "SIMPLE", "description": "yes or no?", "start_block": 27306, "end_block": 27310}'
-
-create new vote on the "hopium_v2" deck with choices "y" and "no", starting from block 27306 and lasting until block 27310.
-
-> pacli vote list "hopium_v2"
-
-Shows all the votes on this deck.
+returns:
 
 ```
-+Votes on this deck:-----------------------------------------------+------------------------------------+------------------+-------------+-----------+
-| vote_id                                                          | sender                             | description      | start_block | end_block |
-+------------------------------------------------------------------+------------------------------------+------------------+-------------+-----------+
-| 7459c9f4738001e3c50653d6066e3d41a9ffb2a1f3d786721bc472bcb04f17fa | msYThv5bf7KjhHT1Cj5D7Y1tofyhq9vhWM | PPC to the moon? | 268400      | 290000    |
-| 79e940296f26feb3e5ebaaea0d9aced153e796926e8db926050977ae02c00fa6 | msYThv5bf7KjhHT1Cj5D7Y1tofyhq9vhWM | test1            | 27306       | 275000    |
-+------------------------------------------------------------------+------------------------------------+------------------+-------------+-----------+
++Deck id: 17d24b9bca5a090a24af138c2e085f80621396e8c7b6f820dee7140aee15cac1 ------------+
+| asset name | issuer                             | issue mode | decimals | issue time |
++------------+------------------------------------+------------+----------+------------+
+| willyB     | n1ga7fPBerBZDK9NPru39Fanzj9cPhbumM | 4          | 2        | 1525317673 |
++------------+------------------------------------+------------+----------+------------+
++('willyB cards',)-------------------+----------------------------------------+--------+-----------+------------+
+| sender                             | receiver                               | amount | type      | timestamp  |
++------------------------------------+----------------------------------------+--------+-----------+------------+
+| n1ga7fPBerBZDK9NPru39Fanzj9cPhbumM | ['n4SqkasjPMKWbfgkuEJHSdK8B22GXfKpju'] | [5]    | CardIssue | 0          |
+| n1ga7fPBerBZDK9NPru39Fanzj9cPhbumM | ['n4SqkasjPMKWbfgkuEJHSdK8B22GXfKpju'] | [1]    | CardIssue | 1525818864 |
+| n1ga7fPBerBZDK9NPru39Fanzj9cPhbumM | ['n4SqkasjPMKWbfgkuEJHSdK8B22GXfKpju'] | [5]    | CardIssue | 1525837744 |
+| n1ga7fPBerBZDK9NPru39Fanzj9cPhbumM | ['n4SqkasjPMKWbfgkuEJHSdK8B22GXfKpju'] | [10]   | CardIssue | 1525839709 |
++------------------------------------+----------------------------------------+--------+-----------+------------+
+
 ```
 
-> pacli vote cast '{"vote": "7459c9f4738001e3c50653d6066e3d41a9ffb2a1f3d786721bc472bcb04f17fa", choice: "yes"}'
-
-cast "yes" vote to vote_id 7459c9f4738001e3c50653d6066e3d41a9ffb2a1f3d786721bc472bcb04f17fa
-
-_____________________________________
-
-This is a early release based on unfinished pypeerassets library.
+Based on the decks with the name "willyB" and cards = True, returning all Card Transfers associated with it.
