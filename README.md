@@ -37,6 +37,6 @@ returns:
 
 Based on the decks with the name "willyB" and cards = True, returning all Card Transfers associated with it.
 
-''' ipython __main__.py deck find all True '''
+``` ipython __main__.py deck find all True ```
 
 Returns the complete list of Decks and their associated cards from the provider.
