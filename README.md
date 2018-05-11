@@ -13,11 +13,11 @@ Using short or full deck id is advised as decks can have a same name.
 
 accepted commands at the moment:
 
->ipython __main__.py deck <function> <argument 1> <argument 2>
+```ipython __main__.py deck <function> <argument 1> <argument 2>```
 
 Example:
 
->ipython __main__.py deck find willyB True
+```ipython __main__.py deck find willyB True```
 
 returns:
 
